@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "./components/ui/card";
+import { Input } from "./components/ui/input";
 import {
   ResponsiveContainer,
   LineChart,
