@@ -199,64 +199,36 @@ export default function PortfolioReturnSim() {
           </ResponsiveContainer>
 
           {/* Detailed Table */}
-          <div className="overflow-auto mt-6">
-            <h2 className="text-lg font-semibold mb-2">Detailed Yearly Breakdown</h2>
-            <table className="min-w-full text-sm border border-gray-300">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border px-2 py-1">Year</th>
-                  <th className="border px-2 py-1">Start Value</th>
-                  <th className="border px-2 py-1">Investment</th>
-                  <th className="border px-2 py-1">Return (excl div)</th>
-                  <th className="border px-2 py-1">Gain</th>
-                  <th className="border px-2 py-1">Div (cash)</th>
-                  <th className="border px-2 py-1">Div (reinv)</th>
-                  <th className="border px-2 py-1">Dividend Yield</th>
-                  <th className="border px-2 py-1">Total Return</th>
-                  <th className="border px-2 py-1">Withdrawal</th>
-                  <th className="border px-2 py-1">End Value</th>
-                  <th className="border px-2 py-1">Net Cash Flow</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[0, 1, 2].map((i) => {
-                  const start = startValues[i];
-                  const inv = investment[i];
-                  const ret = returns[i];
-                  const gain = gains[i];
-                  const divCash = divNotReinvested[i];
-                  const divReinv = divReinvested[i];
-                  const yieldPct = start > 0 ? ((divCash + divReinv) / start) * 100 : 0;
-                  const totalReturn = start > 0 ? ((gain + divCash + divReinv) / start) * 100 : 0;
-                  const w = withdrawals[i];
-                  const end = endValues[i];
-                  const netCF = -inv + divCash + w;
+          {/* SME-style Transposed Table */}
+<div className="overflow-auto mt-6">
+  <h2 className="text-lg font-semibold mb-2">Cash Flow & Return Table (CFA Format)</h2>
+  <table className="min-w-full text-sm border border-gray-300 text-center">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="border px-2 py-1">Year</th>
+        <th className="border px-2 py-1">Timing within Year</th>
+        <th className="border px-2 py-1">0</th>
+        <th className="border px-2 py-1">1</th>
+        <th className="border px-2 py-1">2</th>
+        <th className="border px-2 py-1">3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td className="border px-2 py-1">New Investment (in Millions)</td><td className="border px-2 py-1">Beginning</td><td></td><td>{investment[0]}</td><td>{investment[1]}</td><td>{investment[2]}</td></tr>
+      <tr><td className="border px-2 py-1">Net balance</td><td className="border px-2 py-1">Beginning</td><td></td><td>{startValues[0].toFixed(2)}</td><td>{startValues[1].toFixed(2)}</td><td>{startValues[2].toFixed(2)}</td></tr>
+      <tr><td className="border px-2 py-1">Annual Return (excluding dividends)</td><td className="border px-2 py-1">Over</td><td></td><td>{(returns[0]*100).toFixed(0)}%</td><td>{(returns[1]*100).toFixed(0)}%</td><td>{(returns[2]*100).toFixed(0)}%</td></tr>
+      <tr><td className="border px-2 py-1">Investment gain (loss)</td><td className="border px-2 py-1">Over</td><td></td><td>{gains[0].toFixed(0)}</td><td>{gains[1].toFixed(0)}</td><td>{gains[2].toFixed(1)}</td></tr>
+      <tr><td className="border px-2 py-1">Dividend received (and not reinvested)</td><td className="border px-2 py-1">End</td><td></td><td>{divNotReinvested[0]}</td><td>{divNotReinvested[1]}</td><td>{divNotReinvested[2]}</td></tr>
+      <tr><td className="border px-2 py-1">Dividend received (and reinvested)</td><td className="border px-2 py-1">End</td><td></td><td>{divReinvested[0]}</td><td>{divReinvested[1]}</td><td>{divReinvested[2]}</td></tr>
+      <tr><td className="border px-2 py-1">Dividend yield</td><td className="border px-2 py-1"></td><td>{((divReinvested[0] + divNotReinvested[0]) / startValues[0] * 100).toFixed(1)}%</td><td>{((divReinvested[1] + divNotReinvested[1]) / startValues[1] * 100).toFixed(1)}%</td><td>{((divReinvested[2] + divNotReinvested[2]) / startValues[2] * 100).toFixed(1)}%</td><td></td></tr>
+      <tr><td className="border px-2 py-1">Total Annual Return (including dividends)</td><td className="border px-2 py-1"></td><td>{(((gains[0]+divReinvested[0]+divNotReinvested[0])/startValues[0])*100).toFixed(2)}%</td><td>{(((gains[1]+divReinvested[1]+divNotReinvested[1])/startValues[1])*100).toFixed(2)}%</td><td>{(((gains[2]+divReinvested[2]+divNotReinvested[2])/startValues[2])*100).toFixed(2)}%</td><td></td></tr>
+      <tr><td className="border px-2 py-1">Withdrawal by investor</td><td className="border px-2 py-1">End</td><td></td><td>{withdrawals[0]}</td><td>{withdrawals[1]}</td><td>{withdrawals[2]}</td></tr>
+      <tr><td className="border px-2 py-1">Balance</td><td className="border px-2 py-1">End</td><td></td><td>{endValues[0].toFixed(1)}</td><td>{endValues[1].toFixed(1)}</td><td>{endValues[2].toFixed(1)}</td></tr>
+      <tr><td className="border px-2 py-1">Net cash flows</td><td className="border px-2 py-1">Over</td><td>{(-investment[0] + divNotReinvested[0] + withdrawals[0]).toFixed(1)}</td><td>{(-investment[1] + divNotReinvested[1] + withdrawals[1]).toFixed(1)}</td><td>{(-investment[2] + divNotReinvested[2] + withdrawals[2]).toFixed(1)}</td><td>{endValues[2].toFixed(1)}</td></tr>
+    </tbody>
+  </table>
+</div>
 
-                  return (
-                    <tr key={i} className="text-center">
-                      <td className="border px-2 py-1">Year {i + 1}</td>
-                      <td className="border px-2 py-1">${start.toFixed(2)}</td>
-                      <td className="border px-2 py-1">${inv.toFixed(2)}</td>
-                      <td className="border px-2 py-1">{(ret * 100).toFixed(2)}%</td>
-                      <td className="border px-2 py-1">${gain.toFixed(2)}</td>
-                      <td className="border px-2 py-1">${divCash.toFixed(2)}</td>
-                      <td className="border px-2 py-1">${divReinv.toFixed(2)}</td>
-                      <td className="border px-2 py-1">{yieldPct.toFixed(2)}%</td>
-                      <td className="border px-2 py-1">{totalReturn.toFixed(2)}%</td>
-                      <td className="border px-2 py-1">${w.toFixed(2)}</td>
-                      <td className="border px-2 py-1">${end.toFixed(2)}</td>
-                      <td className="border px-2 py-1">${netCF.toFixed(2)}</td>
-                    </tr>
-                  );
-                })}
-                <tr className="bg-gray-50 font-semibold text-center">
-                  <td className="border px-2 py-1">Final Value</td>
-                  <td className="border px-2 py-1" colSpan={10}>Terminal inflow (used for IRR):</td>
-                  <td className="border px-2 py-1">${endValues[2].toFixed(2)}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
 
           {/* Return Metric Summary */}
           <div className="mt-4 text-sm space-y-1">
