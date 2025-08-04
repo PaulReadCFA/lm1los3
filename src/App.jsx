@@ -196,12 +196,76 @@ export default function PortfolioReturnSim() {
             </LineChart>
           </ResponsiveContainer>
 
+{/* Intermediate Table */}
+<div className="overflow-auto mt-6">
+  <h2 className="text-lg font-semibold mb-2">Detailed Yearly Breakdown</h2>
+  <table className="min-w-full text-sm border border-gray-300">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="border px-2 py-1">Year</th>
+        <th className="border px-2 py-1">Start Value</th>
+        <th className="border px-2 py-1">Investment</th>
+        <th className="border px-2 py-1">Return (excl div)</th>
+        <th className="border px-2 py-1">Gain</th>
+        <th className="border px-2 py-1">Div (cash)</th>
+        <th className="border px-2 py-1">Div (reinv)</th>
+        <th className="border px-2 py-1">Dividend Yield</th>
+        <th className="border px-2 py-1">Total Return</th>
+        <th className="border px-2 py-1">Withdrawal</th>
+        <th className="border px-2 py-1">End Value</th>
+        <th className="border px-2 py-1">Net Cash Flow</th>
+      </tr>
+    </thead>
+    <tbody>
+      {[0, 1, 2].map((i) => {
+        const start = startValues[i];
+        const inv = investment[i];
+        const ret = returns[i];
+        const gain = gains[i];
+        const divCash = divNotReinvested[i];
+        const divReinv = divReinvested[i];
+        const yieldPct = start > 0 ? ((divCash + divReinv) / start) * 100 : 0;
+        const totalReturn = start > 0 ? ((gain + divCash + divReinv) / start) * 100 : 0;
+        const w = withdrawals[i];
+        const end = endValues[i];
+        const netCF = -inv + divCash + w;
+
+        return (
+          <tr key={i} className="text-center">
+            <td className="border px-2 py-1">Year {i + 1}</td>
+            <td className="border px-2 py-1">${start.toFixed(2)}</td>
+            <td className="border px-2 py-1">${inv.toFixed(2)}</td>
+            <td className="border px-2 py-1">{(ret * 100).toFixed(2)}%</td>
+            <td className="border px-2 py-1">${gain.toFixed(2)}</td>
+            <td className="border px-2 py-1">${divCash.toFixed(2)}</td>
+            <td className="border px-2 py-1">${divReinv.toFixed(2)}</td>
+            <td className="border px-2 py-1">{yieldPct.toFixed(2)}%</td>
+            <td className="border px-2 py-1">{totalReturn.toFixed(2)}%</td>
+            <td className="border px-2 py-1">${w.toFixed(2)}</td>
+            <td className="border px-2 py-1">${end.toFixed(2)}</td>
+            <td className="border px-2 py-1">${netCF.toFixed(2)}</td>
+          </tr>
+        );
+      })}
+      {/* Terminal row */}
+      <tr className="bg-gray-50 font-semibold text-center">
+        <td className="border px-2 py-1">Final Value</td>
+        <td className="border px-2 py-1" colSpan={10}>Terminal inflow (used for IRR):</td>
+        <td className="border px-2 py-1">${endValues[2].toFixed(2)}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+          
           {/* Summary Metrics */}
           <div className="mt-4 text-sm space-y-1">
             <p><strong>Internal Rate of Return (MWR):</strong> {(irr * 100).toFixed(2)}%</p>
-            <p><strong>Holding Period Return (TWR):</strong> {(twr * 100).toFixed(2)}%</p>
-            <p><strong>Annual Geometric Mean:</strong> {(annualGeometric * 100).toFixed(2)}%</p>
-            <p><strong>Annual Arithmetic Mean:</strong> {(annualArithmetic * 100).toFixed(2)}%</p>
+            <p><strong>Time-Weighted Return (TWR):</strong> {(twr * 100).toFixed(2)}% <em>(based on total returns including reinvested dividends)</em></p>
+            <p><strong>Geometric Mean (Price Return Only):</strong> {(annualGeometric * 100).toFixed(2)}%</p>
+            <p><strong>Arithmetic Mean (Price Return Only):</strong> {(annualArithmetic * 100).toFixed(2)}%</p>
           </div>
         </CardContent>
       </Card>
